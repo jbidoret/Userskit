@@ -1,5 +1,5 @@
 <?php $site = site(); ?>
-Hi <?= $name ?>
+<?= tt('Hi Name,', ['name' => $name]) ?>
 
 <?= $text ?>
-Reset your password : <?= $site->url() ?>/token/<?= $token ?>
+<?= tt('Reset your password: tokenUrl', ['tokenUrl' => $site->url() ."/token/". $token]) ?>

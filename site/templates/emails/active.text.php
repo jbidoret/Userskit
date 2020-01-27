@@ -1,5 +1,5 @@
 <?php $site = site(); ?>
-Hi <?= $name ?>
+<?= tt('Hi Name,', ['name' => $name]) ?>
 
 <?= $text ?>
-Active link : <?= $site->url() ?>/token/<?= $token ?>
+<?= tt('Active link: tokenUrl', ['tokenUrl' => $site->url() ."/token/". $token]) ?>

@@ -342,7 +342,7 @@
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td>
-                        <H1>Hi <?= $name ?>,</h1>
+                        <H1><?= tt('Hi Name,', ['name' => $name]) ?></h1>
                         <p><?= $text ?></p>
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
@@ -351,7 +351,7 @@
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                   <tbody>
                                     <tr>
-                                      <td> <a href="<?= $site->url() ?>/token/<?= $token ?>" target="_blank">Reset my password</a> </td>
+                                      <td> <?= tt('Reset my password', ['tokenUrl' => $site->url() ."/token/". $token]) ?> </td>
                                     </tr>
                                   </tbody>
                                 </table>
