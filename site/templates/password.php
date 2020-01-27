@@ -20,23 +20,23 @@
 	<form method="POST">
 
 		<div class="field">
-			<label for="password">New password <abbr title="required">•</abbr></label>
+			<label for="password"><?= t('New password') ?> <abbr title="<?= t('label.title.required') ?>">•</abbr></label>
 			<input type="password" id="password" name="password" required>
 		</div>
 
     <div class="field">
-    	<label for="validate">Retype your password <abbr title="required">•</abbr></label>
+    	<label for="validate"><?= t('Retype your password') ?> <abbr title="<?= t('label.title.required') ?>">•</abbr></label>
     	<input type="password" id="validate" name="validate" required>
     </div>
 
     <div class="submit">
-      <button type="submit" name="update" value="update">Change password</button>
-      <p><abbr title="required">•</abbr> Required fields.</p>
+      <button type="submit" name="update" value="update"><?= t('') ?></button>
+      <p><abbr title="<?= t('label.title.required') ?>">•</abbr> <?= t('Required fields.') ?></p>
     </div>
 
   </form>
 
-  <div class="otherlink"><a href="<?= url('account') ?>">Back to account</a></div>
+  <div class="otherlink"><a href="<?= url('account') ?>"><?= t('Back to account') ?></a></div>
 
 	<?php endif ?>
 

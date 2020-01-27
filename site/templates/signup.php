@@ -19,39 +19,39 @@
 	<form method="POST">
 
 		<div class="field">
-			<label for="name">Full name <abbr title="required">•</abbr></label>
+			<label for="name"><?= t('Full name') ?> <abbr title="<?= t('label.title.required') ?>">•</abbr></label>
 			<input type="text" id="name" name="name" value="<?= esc(get('name')) ?>" required>
 		</div>
 
 		<div class="field">
-			<label for="email">Email <abbr title="required">•</abbr></label>
+			<label for="email"><?= t('Email') ?> <abbr title="<?= t('label.title.required') ?>">•</abbr></label>
 			<input type="email" id="email" name="email" value="<?= esc(get('email')) ?>" required>
 		</div>
 
 		<div class="field">
-			<label for="password">Password <abbr title="required">•</abbr></label>
+			<label for="password"><?= t('Password') ?> <abbr title="<?= t('label.title.required') ?>">•</abbr></label>
 			<input type="password" id="password" name="password" required>
-      <small class="help">Minimum 8 characters.</small>
+      <small class="help"><?= t('Minimum 8 characters.') ?></small>
 		</div>
 
     <div class="field">
-    	<label for="validate">Retype your password <abbr title="required">•</abbr></label>
+    	<label for="validate"><?= t('Retype your password') ?> <abbr title="<?= t('label.title.required') ?>">•</abbr></label>
     	<input type="password" id="validate" name="validate" required>
     </div>
 
 		<div class="field honeypot">
-			<label for="website">Web site</label>
+			<label for="website"><?= t('Web site') ?></label>
 			<input type="text" id="website" name="website">
 		</div>
     
     <div class="submit">
-      <button type="submit" name="registration" value="registration">Create Account</button>
-      <p><abbr title="required">•</abbr> Required fields.</p>
+      <button type="submit" name="registration" value="registration"><?= t('Create Account') ?></button>
+      <p><abbr title="<?= t('label.title.required') ?>">•</abbr> <?= t('Required fields.') ?></p>
     </div>
 
   </form>
 
-  <div class="otherlink">You are a member? <a href="<?= url('login') ?>">Sign in</a></div>
+  <div class="otherlink"><?= tt('You are a member? Sign in', ['loginUrl'=> url('login')]) ?></div>
 
 	<?php endif ?>
 

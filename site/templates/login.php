@@ -13,26 +13,26 @@
   <form method="POST">
 
     <div class="field">
-      <label for="username">Email <abbr title="required">•</abbr></label>
+      <label for="username"><?= t('Email') ?> <abbr title="<?= t('label.title.required') ?>">•</abbr></label>
       <input type="text" id="username" name="username" value="<?= esc(get('username')) ?>" required>
     </div>
 
     <div class="field">
       <label for="password">
-        Password <abbr title="required">•</abbr>
-        <small><a href="<?= url('account/reset') ?>">Forgot password ?</a></small>
+      <?= t('Password') ?> <abbr title="<?= t('label.title.required') ?>">•</abbr>
+        <small><a href="<?= url('account/reset') ?>"><?= t('Forgot password ?') ?></a></small>
       </label>
       <input type="password" id="password" name="password" required>
     </div>
 
     <div class="submit">
-      <button type="submit" name="login" value="login">Sign in</button>
-      <p><abbr title="required">•</abbr> Required fields.</p>
+      <button type="submit" name="login" value="login"><?= t('Sign in') ?></button>
+      <p><abbr title="<?= t('Required fields.') ?>">•</abbr> </p>
     </div>
 
   </form>
 
-  <div class="otherlink">Not a member? <a href="<?= url('account/signup') ?>">Sign up now</a></div>
+  <div class="otherlink"><?= tt("Not a member? Sign up now", ['signupUrl' => url('account/signup') ]) ?></div>
 
 </main>
 
