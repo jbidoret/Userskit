@@ -5,6 +5,7 @@ return function ($kirby) {
   if(!$kirby->user()) go('login');
 
 	$error = null;
+	$success = null;
 
 	if($kirby->request()->is('POST') and get('update')) {
 
@@ -19,11 +20,11 @@ return function ($kirby) {
 			  	'password' => $kirby->user()->changePassword($password),
 			  ]);
 
-		    $success = 'Your passwords have been changed successfully.';
+		    $success = t('Your passwords have been changed successfully.');
 
 		  } else { // v::same
 
-		    $error = 'Please note, passwords must be identical!';
+		    $error = t('Please note, passwords must be identical!');
 
 		  }
 

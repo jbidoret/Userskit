@@ -16,11 +16,11 @@ return function($kirby) {
           // or any other page
           go();
         } else {
-          $error = 'No user is registered with this email address.';
+          $error = t('No user is registered with this email address.');
         }
       }
     } catch(Exception $e) {
-    	$error = 'Password invalid.<br /><a href="' . url('account/reset') . '">Reset your password ?</a>';
+    	$error = tt('Password invalid. Reset your password ?', ['resetUrl' => url('account/reset')]);
     }
 
   }

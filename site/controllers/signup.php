@@ -4,7 +4,8 @@ return function ($kirby) {
 
   if($kirby->user()) go('/');
 
-	$error = null;
+  $error = null;
+  $success = null;
 
 	if($kirby->request()->is('POST') and get('registration')) {
 
@@ -28,11 +29,11 @@ return function ($kirby) {
           'role'      => 'editor'
         ]);
 
-        $success = 'The user "' . $user->name() . '" has been created';
+        $success = tt('The user "username" has been created', ['username' => $user->name()]);
 
       } else {
 
-        $error = 'Please note, passwords must be identical!';
+        $error = t('Please note, passwords must be identical!');
 
       }
     

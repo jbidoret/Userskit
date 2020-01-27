@@ -5,6 +5,7 @@ return function ($kirby, $page) {
 	if($kirby->user()) go('/');
 
 	$error = null;
+	$success = null;
 
 	if($kirby->request()->is('POST') and get('registration')) {
 
@@ -40,7 +41,7 @@ return function ($kirby, $page) {
 			// Build the email text
 			$to      = $user->email();
 			$from    = 'contact@starck.io';
-			$subject = 'Active your account.';
+			$subject = t('Active your account.');
 
 			// Send the confirmation email
 			if(v::email($from) and v::email($to)) {
@@ -51,16 +52,16 @@ return function ($kirby, $page) {
   			  'template' => 'active',
   			  'data'     => [
   			    'name'   => $user->name(),
-  			    'token'  => $token,
-  			    'text'   => 'Thank you for registering on '.str_replace('www.', '', $_SERVER['HTTP_HOST']).'. Go to the link below to activate your account and choose your password.'
+				'token'  => $token,
+				'text'   => tt('Thank you for registering on siteHost. Go to the link below to activate your account and choose your password.', ['siteHost' => str_replace('www.', '', $_SERVER['HTTP_HOST'])])
   			  ]
   			]);
 
   			$user->logout();
-				$success = 'Your account has been created!<br />You will receive an email to activate it.';
+				$success = t('Your account has been created!<br />You will receive an email to activate it.');
 
 			} else {
-				$error = 'We were unable to send your account verification email. Contact the store owner directly to activate your account.';
+				$error = t('We were unable to send your account verification email. Contact the store owner directly to activate your account.');
 			}
 
 		} catch(Exception $e) {

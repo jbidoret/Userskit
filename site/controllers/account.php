@@ -4,7 +4,8 @@ return function ($kirby) {
 
   if(!$kirby->user()) go('login');
 
-	$error = null;
+  	$error = null;
+  	$success = null;
 
 	if($kirby->request()->is('POST') and get('update')) {
 
@@ -19,8 +20,8 @@ return function ($kirby) {
 		];
 
 		$messages = [
-			'name'  => 'Please, enter a valid name.',
-			'email' => 'Please, enter a valid email address.',
+			'name'  => t('Please, enter a valid name.'),
+			'email' => t('Please, enter a valid email address.'),
 		];
 
 		if($invalid = invalid($data, $rules, $messages)) {
@@ -34,7 +35,7 @@ return function ($kirby) {
 					'email' => $kirby->user()->changeEmail($data['email']),
 				]);
 
-				$success = 'Your informations has been successfully updated.';
+				$success = t('Your informations has been successfully updated.');
 				$data = array();
 
 			} catch(Exception $e) {

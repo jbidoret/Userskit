@@ -32,7 +32,7 @@ return function ($kirby, $page) {
   			// Build the email text
   			$to      = get('email');
   			$from    = 'contact@starck.io';
-  			$subject = 'Reset your password.';
+  			$subject = t('Reset your password.');
   
   			// Send the confirmation email
   			if(v::email($from) and v::email($to)) {
@@ -43,23 +43,22 @@ return function ($kirby, $page) {
     			  'template' => 'reset',
     			  'data'     => [
     			    'name'   => $user->name(),
-    			    'token'  => $token,
-    			    'text'   => 'Someone (hopefully it was you) asked us to reset the password for your '.str_replace('www.', '', $_SERVER['HTTP_HOST']).' account.
-    			    	Click on the button below to get there. If you have not asked to reset your password, skip this message!'
+					'token'  => $token,
+					'text'   => tt('Someone (hopefully it was you) asked us to reset the password for your siteHost account. Click on the button below to get there. If you have not asked to reset your password, skip this message!', ['siteHost' => str_replace('www.', '', $_SERVER['HTTP_HOST'])] )
     			  ]
     			]);
 
-  				$success = 'You will receive an email with instructions to reset your password.';
+  				$success = t('You will receive an email with instructions to reset your password.');
   			} else {
-  				$error = 'We were unable to send your account verification email. Please try again later.';
+  				$error = t('We were unable to send your account verification email. Please try again later.');
   			}
   
   		} else {
-  			$error = 'No account corresponding to the email.';
+  			$error = t('No account corresponding to the email.');
   		}
 
 		} catch(Exception $e) {
-			$error = 'Failed:<br />' . $e->getMessage();
+			$error = tt('Failed:<br /> Message', ['message' => $e->getMessage()]);
 		}
 
 

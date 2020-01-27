@@ -5,6 +5,7 @@ return function ($kirby) {
   if(!$kirby->user()) go('login');
 
 	$error = null;
+	$success = null;
 
 	if($kirby->request()->is('POST') and get('delete')) {
 
@@ -19,11 +20,11 @@ return function ($kirby) {
 
 			  $kirby->user()->logout();
 
-		    $success = 'Your account has been successfully deleted.';
+		    $success = t('Your account has been successfully deleted.');
 
 		  } else { // v::same
 
-		    $error = 'Please note, passwords must be identical!';
+		    $error = t('Please note, passwords must be identical!');
 
 		  }
 
