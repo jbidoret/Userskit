@@ -12,6 +12,12 @@ use Kirby\Toolkit\V;
 
 /**
  * Validators for all file actions
+ *
+ * @package   Kirby Cms
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
  */
 class FileRules
 {
@@ -25,7 +31,7 @@ class FileRules
         }
 
         $parent    = $file->parent();
-        $duplicate = $parent->files()->not($file)->findBy('name', $name);
+        $duplicate = $parent->files()->not($file)->findBy('filename', $name . '.' . $file->extension());
 
         if ($duplicate) {
             throw new DuplicateException([
@@ -64,7 +70,7 @@ class FileRules
     public static function delete(File $file): bool
     {
         if ($file->permissions()->delete() !== true) {
-            throw new LogicException('The file cannot be deleted');
+            throw new PermissionException('The file cannot be deleted');
         }
 
         return true;
@@ -73,13 +79,16 @@ class FileRules
     public static function replace(File $file, Image $upload): bool
     {
         if ($file->permissions()->replace() !== true) {
-            throw new LogicException('The file cannot be replaced');
+            throw new PermissionException('The file cannot be replaced');
         }
 
         static::validMime($file, $upload->mime());
 
 
-        if ((string)$upload->mime() !== (string)$file->mime()) {
+        if (
+            (string)$upload->mime() !== (string)$file->mime() &&
+            (string)$upload->extension() !== (string)$file->extension()
+        ) {
             throw new InvalidArgumentException([
                 'key'  => 'file.mime.differs',
                 'data' => ['mime' => $file->mime()]
@@ -94,7 +103,7 @@ class FileRules
     public static function update(File $file, array $content = []): bool
     {
         if ($file->permissions()->update() !== true) {
-            throw new LogicException('The file cannot be updated');
+            throw new PermissionException('The file cannot be updated');
         }
 
         return true;

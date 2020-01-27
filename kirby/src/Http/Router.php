@@ -2,18 +2,21 @@
 
 namespace Kirby\Http;
 
+use Closure;
 use Exception;
 use InvalidArgumentException;
 
 /**
  * @package   Kirby Http
  * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
- * @license   MIT
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class Router
 {
+    public static $beforeEach;
+    public static $afterEach;
 
     /**
      * Store for the current route,
@@ -78,16 +81,43 @@ class Router
      * the appropriate arguments and a Result
      * object.
      *
-     * @param  string $path
-     * @param  string $method
+     * @param string $path
+     * @param string $method
+     * @param Closure|null $callback
      * @return mixed
      */
-    public function call(string $path = '', string $method = 'GET')
+    public function call(string $path = null, string $method = 'GET', Closure $callback = null)
     {
-        return $this
-            ->find($path, $method)
-            ->action()
-            ->call($this->route, ...$this->route->arguments());
+        $path   = $path ?? '';
+        $ignore = [];
+        $result = null;
+        $loop   = true;
+
+        while ($loop === true) {
+            $route = $this->find($path, $method, $ignore);
+
+            if (is_a(static::$beforeEach, 'Closure') === true) {
+                (static::$beforeEach)($route, $path, $method);
+            }
+
+            try {
+                if ($callback) {
+                    $result = $callback($route);
+                } else {
+                    $result = $route->action()->call($route, ...$route->arguments());
+                }
+
+                $loop   = false;
+            } catch (Exceptions\NextRouteException $e) {
+                $ignore[] = $route;
+            }
+
+            if (is_a(static::$afterEach, 'Closure') === true) {
+                $result = (static::$afterEach)($route, $path, $method, $result);
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -96,11 +126,12 @@ class Router
      * find matches and return all the found
      * arguments in the path.
      *
-     * @param  string $path
-     * @param  string $method
-     * @return Route|null
+     * @param string $path
+     * @param string $method
+     * @param array $ignore
+     * @return \Kirby\Http\Route|null
      */
-    public function find(string $path, string $method)
+    public function find(string $path, string $method, array $ignore = null)
     {
         if (isset($this->routes[$method]) === false) {
             throw new InvalidArgumentException('Invalid routing method: ' . $method, 400);
@@ -113,7 +144,9 @@ class Router
             $arguments = $route->parse($route->pattern(), $path);
 
             if ($arguments !== false) {
-                return $this->route = $route;
+                if (empty($ignore) === true || in_array($route, $ignore) === false) {
+                    return $this->route = $route;
+                }
             }
         }
 
@@ -126,7 +159,7 @@ class Router
      * once Router::find() has been called
      * and only if a route was found.
      *
-     * @return Route|null
+     * @return \Kirby\Http\Route|null
      */
     public function route()
     {

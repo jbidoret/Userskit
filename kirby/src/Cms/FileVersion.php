@@ -2,8 +2,24 @@
 
 namespace Kirby\Cms;
 
-class FileVersion extends Asset
+use Kirby\Toolkit\Properties;
+
+/**
+ * FileVersion
+ *
+ * @package   Kirby Cms
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
+ */
+class FileVersion
 {
+    use FileFoundation {
+        toArray as parentToArray;
+    }
+    use Properties;
+
     protected $modifications;
     protected $original;
 
@@ -23,8 +39,10 @@ class FileVersion extends Asset
             return $this->asset()->$method(...$arguments);
         }
 
-        // content fields
-        return $this->original()->content()->get($method, $arguments);
+        if (is_a($this->original(), 'Kirby\Cms\File') === true) {
+            // content fields
+            return $this->original()->content()->get($method, $arguments);
+        }
     }
 
     public function id(): string
@@ -32,7 +50,10 @@ class FileVersion extends Asset
         return dirname($this->original()->id()) . '/' . $this->filename();
     }
 
-    public function kirby(): App
+    /**
+     * @return \Kirby\Cms\App
+     */
+    public function kirby()
     {
         return $this->original()->kirby();
     }
@@ -42,7 +63,7 @@ class FileVersion extends Asset
         return $this->modifications ?? [];
     }
 
-    public function original(): File
+    public function original()
     {
         return $this->original;
     }
@@ -58,7 +79,7 @@ class FileVersion extends Asset
         $this->modifications = $modifications;
     }
 
-    protected function setOriginal(File $original)
+    protected function setOriginal($original)
     {
         $this->original = $original;
     }
@@ -70,7 +91,7 @@ class FileVersion extends Asset
      */
     public function toArray(): array
     {
-        $array = array_merge(parent::toArray(), [
+        $array = array_merge($this->parentToArray(), [
             'modifications' => $this->modifications(),
         ]);
 

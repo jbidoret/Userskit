@@ -2,9 +2,17 @@
 
 namespace Kirby\Cms;
 
+/**
+ * HasMethods
+ *
+ * @package   Kirby Cms
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
+ */
 trait HasMethods
 {
-
     /**
      * All registered methods
      *
@@ -16,8 +24,9 @@ trait HasMethods
      * Calls a registered method class with the
      * passed arguments
      *
-     * @param  string $method
-     * @param  array  $args
+     * @internal
+     * @param string $method
+     * @param array $args
      * @return mixed
      */
     public function callMethod(string $method, array $args = [])
@@ -28,8 +37,9 @@ trait HasMethods
     /**
      * Checks if the object has a registered method
      *
+     * @internal
      * @param string $method
-     * @return boolean
+     * @return bool
      */
     public function hasMethod(string $method): bool
     {

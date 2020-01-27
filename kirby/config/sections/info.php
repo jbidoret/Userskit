@@ -4,7 +4,7 @@ use Kirby\Toolkit\I18n;
 
 return [
     'mixins' => [
-        'headline'
+        'headline',
     ],
     'props' => [
         'text' => function ($text = null) {
@@ -19,7 +19,6 @@ return [
             if ($this->text) {
                 $text = $this->model()->toString($this->text);
                 $text = $this->kirby()->kirbytext($text);
-
                 return $text;
             }
         },

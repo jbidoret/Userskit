@@ -1,7 +1,5 @@
 <?php
 
-use Kirby\Exception\InvalidArgumentException;
-
 /**
  * Page Routes
  */
@@ -51,9 +49,25 @@ return [
     ],
     [
         'pattern' => 'pages/(:any)/children/search',
+        'method'  => 'GET|POST',
+        'action'  => function (string $id) {
+            $pages = $this->page($id)->children();
+
+            if ($this->requestMethod() === 'GET') {
+                return $pages->search($this->requestQuery('q'));
+            } else {
+                return $pages->query($this->requestBody());
+            }
+        }
+    ],
+    [
+        'pattern' => 'pages/(:any)/duplicate',
         'method'  => 'POST',
         'action'  => function (string $id) {
-            return $this->page($id)->children()->query($this->requestBody());
+            return $this->page($id)->duplicate($this->requestBody('slug'), [
+                'children' => $this->requestBody('children'),
+                'files'    => $this->requestBody('files'),
+            ]);
         }
     ],
     [

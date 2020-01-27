@@ -5,12 +5,17 @@ namespace Kirby\Cms;
 use Kirby\Exception\DuplicateException;
 use Kirby\Exception\InvalidArgumentException;
 use Kirby\Exception\LogicException;
-use Kirby\Exception\NotFoundException;
 use Kirby\Exception\PermissionException;
 use Kirby\Toolkit\Str;
 
 /**
  * Validators for all page actions
+ *
+ * @package   Kirby Cms
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
  */
 class PageRules
 {
@@ -28,7 +33,9 @@ class PageRules
         if ($page->permissions()->changeSlug() !== true) {
             throw new PermissionException([
                 'key'  => 'page.changeSlug.permission',
-                'data' => ['slug' => $page->slug()]
+                'data' => [
+                    'slug' => $page->slug()
+                ]
             ]);
         }
 
@@ -39,7 +46,9 @@ class PageRules
             if ($duplicate->is($page) === false) {
                 throw new DuplicateException([
                     'key'  => 'page.duplicate',
-                    'data' => ['slug' => $slug]
+                    'data' => [
+                        'slug' => $slug
+                    ]
                 ]);
             }
         }
@@ -48,7 +57,9 @@ class PageRules
             if ($duplicate->is($page) === false) {
                 throw new DuplicateException([
                     'key'  => 'page.draft.duplicate',
-                    'data' => ['slug' => $slug]
+                    'data' => [
+                        'slug' => $slug
+                    ]
                 ]);
             }
         }
@@ -79,14 +90,18 @@ class PageRules
         if ($page->permissions()->changeStatus() !== true) {
             throw new PermissionException([
                 'key'  => 'page.changeStatus.permission',
-                'data' => ['slug' => $page->slug()]
+                'data' => [
+                    'slug' => $page->slug()
+                ]
             ]);
         }
 
         if ($page->isHomeOrErrorPage() === true) {
             throw new PermissionException([
                 'key'  => 'page.changeStatus.toDraft.invalid',
-                'data' => ['slug' => $page->slug()]
+                'data' => [
+                    'slug' => $page->slug()
+                ]
             ]);
         }
 
@@ -101,7 +116,9 @@ class PageRules
             if ($page->isSortable() !== true) {
                 throw new PermissionException([
                     'key'  => 'page.sort.permission',
-                    'data' => ['slug' => $page->slug()]
+                    'data' => [
+                        'slug' => $page->slug()
+                    ]
                 ]);
             }
 
@@ -111,7 +128,9 @@ class PageRules
         if ($page->permissions()->changeStatus() !== true) {
             throw new PermissionException([
                 'key'  => 'page.changeStatus.permission',
-                'data' => ['slug' => $page->slug()]
+                'data' => [
+                    'slug' => $page->slug()
+                ]
             ]);
         }
 
@@ -134,7 +153,9 @@ class PageRules
         if ($page->permissions()->changeStatus() !== true) {
             throw new PermissionException([
                 'key'  => 'page.changeStatus.permission',
-                'data' => ['slug' => $page->slug()]
+                'data' => [
+                    'slug' => $page->slug()
+                ]
             ]);
         }
 
@@ -146,7 +167,9 @@ class PageRules
         if ($page->permissions()->changeTemplate() !== true) {
             throw new PermissionException([
                 'key'  => 'page.changeTemplate.permission',
-                'data' => ['slug' => $page->slug()]
+                'data' => [
+                    'slug' => $page->slug()
+                ]
             ]);
         }
 
@@ -171,7 +194,9 @@ class PageRules
         if ($page->permissions()->changeTitle() !== true) {
             throw new PermissionException([
                 'key'  => 'page.changeTitle.permission',
-                'data' => ['slug' => $page->slug()]
+                'data' => [
+                    'slug' => $page->slug()
+                ]
             ]);
         }
 
@@ -180,15 +205,28 @@ class PageRules
 
     public static function create(Page $page): bool
     {
+        if (Str::length($page->slug()) < 1) {
+            throw new InvalidArgumentException([
+                'key' => 'page.slug.invalid',
+            ]);
+        }
+
         if ($page->exists() === true) {
             throw new DuplicateException([
                 'key'  => 'page.draft.duplicate',
-                'data' => ['slug' => $page->slug()]
+                'data' => [
+                    'slug' => $page->slug()
+                ]
             ]);
         }
 
         if ($page->permissions()->create() !== true) {
-            throw new PermissionException(['key' => 'page.create.permission']);
+            throw new PermissionException([
+                'key' => 'page.create.permission',
+                'data' => [
+                    'slug' => $page->slug()
+                ]
+            ]);
         }
 
         $siblings = $page->parentModel()->children();
@@ -215,11 +253,30 @@ class PageRules
     public static function delete(Page $page, bool $force = false): bool
     {
         if ($page->permissions()->delete() !== true) {
-            throw new PermissionException(['key' => 'page.delete.permission']);
+            throw new PermissionException([
+                'key' => 'page.delete.permission',
+                'data' => [
+                    'slug' => $page->slug()
+                ]
+            ]);
         }
 
         if (($page->hasChildren() === true || $page->hasDrafts() === true) && $force === false) {
             throw new LogicException(['key' => 'page.delete.hasChildren']);
+        }
+
+        return true;
+    }
+
+    public static function duplicate(Page $page, string $slug, array $options = []): bool
+    {
+        if ($page->permissions()->duplicate() !== true) {
+            throw new PermissionException([
+                'key' => 'page.duplicate.permission',
+                'data' => [
+                    'slug' => $page->slug()
+                ]
+            ]);
         }
 
         return true;

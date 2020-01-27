@@ -6,10 +6,19 @@ use Kirby\Http\Url as BaseUrl;
 use Kirby\Toolkit\Str;
 
 /**
- * Extension of the Kirby\Http\Url class
- * with a specific Url::home method that always
- * creates the correct base Url and a template asset
- * Url builder.
+ * The `Url` class extends the
+ * `Kirby\Http\Url` class. In addition
+ * to the methods of that class for dealing
+ * with URLs, it provides a specific
+ * `Url::home` method that always creates
+ * the correct base URL and a template asset
+ * URL builder.
+ *
+ * @package   Kirby Cms
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
  */
 class Url extends BaseUrl
 {
@@ -68,16 +77,20 @@ class Url extends BaseUrl
         }
 
         // get a language url for the linked page, if the page can be found
-        if ($language !== null && $kirby->multilang() === true && $page = page($path)) {
-            $path = $page->url($language);
+        if ($kirby->multilang() === true) {
+            $parts = Str::split($path, '#');
+
+            if ($page = page($parts[0] ?? null)) {
+                $path = $page->url($language);
+
+                if (isset($parts[1]) === true) {
+                    $path .= '#' . $parts[1];
+                }
+            }
         }
 
-        if ($handler = $kirby->component('url')) {
-            return $handler($kirby, $path, $options, function (string $path = null, $options = null) {
-                return parent::to($path, $options);
-            });
-        }
-
-        return parent::to($path, $options);
+        return $kirby->component('url')($kirby, $path, $options, function (string $path = null, $options = null) {
+            return parent::to($path, $options);
+        });
     }
 }

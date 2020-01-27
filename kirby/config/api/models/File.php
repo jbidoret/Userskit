@@ -17,6 +17,9 @@ return [
         'dimensions' => function (File $file) {
             return $file->dimensions()->toArray();
         },
+        'dragText' => function (File $file) {
+            return $file->dragText();
+        },
         'exists' => function (File $file) {
             return $file->exists();
         },
@@ -45,25 +48,16 @@ return [
             return $file->next();
         },
         'nextWithTemplate' => function (File $file) {
-            $files = $file->templateSiblings()->sortBy('sort', 'asc');
+            $files = $file->templateSiblings()->sortBy('sort', 'asc', 'filename', 'asc');
             $index = $files->indexOf($file);
 
             return $files->nth($index + 1);
         },
-        'options' => function (File $file) {
-            return $file->permissions()->toArray();
-        },
-        'prev' => function (File $file) {
-            return $file->prev();
-        },
-        'prevWithTemplate' => function (File $file) {
-            $files = $file->templateSiblings()->sortBy('sort', 'asc');
-            $index = $files->indexOf($file);
-
-            return $files->nth($index - 1);
-        },
         'niceSize' => function (File $file) {
             return $file->niceSize();
+        },
+        'options' => function (File $file) {
+            return $file->panelOptions();
         },
         'panelIcon' => function (File $file) {
             return $file->panelIcon();
@@ -71,17 +65,29 @@ return [
         'panelImage' => function (File $file) {
             return $file->panelImage();
         },
+        'panelUrl' => function (File $file) {
+            return $file->panelUrl(true);
+        },
+        'prev' => function (File $file) {
+            return $file->prev();
+        },
+        'prevWithTemplate' => function (File $file) {
+            $files = $file->templateSiblings()->sortBy('sort', 'asc', 'filename', 'asc');
+            $index = $files->indexOf($file);
+
+            return $files->nth($index - 1);
+        },
         'parent' => function (File $file) {
             return $file->parent();
         },
         'parents' => function (File $file) {
             return $file->parents()->flip();
         },
-        'template' => function (File $file) {
-            return $file->template();
-        },
         'size' => function (File $file) {
             return $file->size();
+        },
+        'template' => function (File $file) {
+            return $file->template();
         },
         'thumbs' => function ($file) {
             if ($file->isResizable() === false) {
@@ -103,7 +109,7 @@ return [
             return $file->url(true);
         },
     ],
-    'type'  => File::class,
+    'type'  => 'Kirby\Cms\File',
     'views' => [
         'default' => [
             'content',

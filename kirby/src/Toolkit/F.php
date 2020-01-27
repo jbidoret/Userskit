@@ -4,11 +4,19 @@ namespace Kirby\Toolkit;
 
 use Exception;
 use Throwable;
-use Kirby\Http\Header;
 use ZipArchive;
 
 /**
- * Low level file handling utilities
+ * The `F` class provides methods for
+ * dealing with files on the file system
+ * level, like creating, reading,
+ * deleting, copying or validatings files.
+ *
+ * @package   Kirby Toolkit
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class F
 {
@@ -40,6 +48,7 @@ class F
             'py',
             'scss',
             'xml',
+            'yaml',
             'yml',
         ],
         'document' => [
@@ -69,6 +78,7 @@ class F
             'jpeg',
             'jpg',
             'jpe',
+            'jp2',
             'png',
             'ps',
             'psd',
@@ -93,14 +103,14 @@ class F
         ],
     ];
 
-    public static $units = ['B','kB','MB','GB','TB','PB', 'EB', 'ZB', 'YB'];
+    public static $units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
     /**
      * Appends new content to an existing file
      *
-     * @param  string  $file The path for the file
-     * @param  mixed   $content Either a string or an array. Arrays will be converted to JSON.
-     * @return boolean
+     * @param string $file The path for the file
+     * @param mixed $content Either a string or an array. Arrays will be converted to JSON.
+     * @return bool
      */
     public static function append(string $file, $content): bool
     {
@@ -121,10 +131,10 @@ class F
     /**
      * Copy a file to a new location.
      *
-     * @param  string  $file
-     * @param  string  $target
-     * @param  boolean $force
-     * @return boolean
+     * @param string $source
+     * @param string $target
+     * @param bool $force
+     * @return bool
      */
     public static function copy(string $source, string $target, bool $force = false): bool
     {
@@ -152,7 +162,7 @@ class F
      *
      * </code>
      *
-     * @param  string  $file The path
+     * @param string $file The path
      * @return string
      */
     public static function dirname(string $file): string
@@ -165,7 +175,7 @@ class F
      *
      * @param string $file
      * @param string $in
-     * @return boolean
+     * @return bool
      */
     public static function exists(string $file, string $in = null): bool
     {
@@ -180,8 +190,8 @@ class F
     /**
      * Gets the extension of a file
      *
-     * @param  string  $file The filename or path
-     * @param  string  $extension Set an optional extension to overwrite the current one
+     * @param string $file The filename or path
+     * @param string $extension Set an optional extension to overwrite the current one
      * @return string
      */
     public static function extension(string $file = null, string $extension = null): string
@@ -248,7 +258,7 @@ class F
      *
      * </code>
      *
-     * @param  string  $name The path
+     * @param string $name The path
      * @return string
      */
     public static function filename(string $name): string
@@ -257,11 +267,26 @@ class F
     }
 
     /**
+     * Invalidate opcode cache for file.
+     *
+     * @param string $file The path of the file
+     * @return bool
+     */
+    public static function invalidateOpcodeCache(string $file): bool
+    {
+        if (function_exists('opcache_invalidate') && strlen(ini_get('opcache.restrict_api')) === 0) {
+            return opcache_invalidate($file, true);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Checks if a file is of a certain type
      *
      * @param string $file Full path to the file
      * @param string $value An extension or mime type
-     * @return boolean
+     * @return bool
      */
     public static function is(string $file, string $value): bool
     {
@@ -282,7 +307,7 @@ class F
      * Checks if the file is readable
      *
      * @param string $file
-     * @return boolean
+     * @return bool
      */
     public static function isReadable(string $file): bool
     {
@@ -293,7 +318,7 @@ class F
      * Checks if the file is writable
      *
      * @param string $file
-     * @return boolean
+     * @return bool
      */
     public static function isWritable(string $file): bool
     {
@@ -310,7 +335,7 @@ class F
      * @param string $source
      * @param string $link
      * @param string $method
-     * @return boolean
+     * @return bool
      */
     public static function link(string $source, string $link, string $method = 'link'): bool
     {
@@ -324,13 +349,18 @@ class F
             throw new Exception(sprintf('The file "%s" does not exist and cannot be linked', $source));
         }
 
-        return $method($source, $link);
+        try {
+            return $method($source, $link) === true;
+        } catch (Throwable $e) {
+            return false;
+        }
     }
 
     /**
      * Loads a file and returns the result
      *
      * @param string $file
+     * @param mixed $fallback
      * @return mixed
      */
     public static function load(string $file, $fallback = null)
@@ -384,9 +414,9 @@ class F
     /**
      * Get the file's last modification time.
      *
-     * @param  string $file
-     * @param  string $format
-     * @param  string $handler date or strftime
+     * @param string $file
+     * @param string $format
+     * @param string $handler date or strftime
      * @return mixed
      */
     public static function modified(string $file, string $format = null, string $handler = 'date')
@@ -410,10 +440,10 @@ class F
     /**
      * Moves a file to a new location
      *
-     * @param  string  $oldRoot The current path for the file
-     * @param  string  $newRoot The path to the new location
-     * @param  boolean $force Force move if the target file exists
-     * @return boolean
+     * @param string $oldRoot The current path for the file
+     * @param string $newRoot The path to the new location
+     * @param bool $force Force move if the target file exists
+     * @return bool
      */
     public static function move(string $oldRoot, string $newRoot, bool $force = false): bool
     {
@@ -428,7 +458,7 @@ class F
             }
 
             // delete the existing file
-            unlink($newRoot);
+            static::remove($newRoot);
         }
 
         // actually move the file if it exists
@@ -442,7 +472,7 @@ class F
     /**
      * Extracts the name from a file path or filename without extension
      *
-     * @param  string  $name The path or filename
+     * @param string $name The path or filename
      * @return string
      */
     public static function name(string $name): string
@@ -453,7 +483,7 @@ class F
     /**
      * Converts an integer size into a human readable format
      *
-     * @param  mixed $size The file size or a file path
+     * @param mixed $size The file size or a file path
      * @return string|int
      */
     public static function niceSize($size): string
@@ -478,7 +508,7 @@ class F
     /**
      * Reads the content of a file
      *
-     * @param  string $file The path for the file
+     * @param string $file The path for the file
      * @return string|false
      */
     public static function read(string $file)
@@ -490,9 +520,9 @@ class F
      * Changes the name of the file without
      * touching the extension
      *
-     * @param  string $file
-     * @param  string $newName
-     * @param  bool   $overwrite Force overwrite existing files
+     * @param string $file
+     * @param string $newName
+     * @param bool $overwrite Force overwrite existing files
      * @return string|false
      */
     public static function rename(string $file, string $newName, bool $overwrite = false)
@@ -534,7 +564,7 @@ class F
             $parent = realpath($in);
 
             if ($parent === false || is_dir($parent) === false) {
-                throw new Exception(sprintf('The parent directory does not exist: "%s"', $parent));
+                throw new Exception(sprintf('The parent directory does not exist: "%s"', $in));
             }
 
             if (substr($realpath, 0, strlen($parent)) !== $parent) {
@@ -543,6 +573,31 @@ class F
         }
 
         return $realpath;
+    }
+
+    /**
+     * Returns the relative path of the file
+     * starting after $in
+     *
+     * @param string $file
+     * @param string $in
+     * @return string
+     */
+    public static function relativepath(string $file, string $in = null): string
+    {
+        if (empty($in) === true) {
+            return basename($file);
+        }
+
+        // windows
+        $file = str_replace('\\', '/', $file);
+        $in   = str_replace('\\', '/', $in);
+
+        if (Str::contains($file, $in) === false) {
+            return basename($file);
+        }
+
+        return Str::after($file, $in);
     }
 
     /**
@@ -555,8 +610,8 @@ class F
      *
      * </code>
      *
-     * @param  string  $file The path for the file
-     * @return boolean
+     * @param string $file The path for the file
+     * @return bool
      */
     public static function remove(string $file): bool
     {
@@ -587,7 +642,7 @@ class F
      *
      * </code>
      *
-     * @param  string $string The file name
+     * @param string $string The file name
      * @return string
      */
     public static function safeName(string $string): string
@@ -605,6 +660,7 @@ class F
      * building a glob based on the path
      *
      * @param string $path
+     * @param string $pattern
      * @return array
      */
     public static function similar(string $path, string $pattern = '*'): array
@@ -619,7 +675,7 @@ class F
     /**
      * Returns the size of a file.
      *
-     * @param  mixed  $file The path
+     * @param mixed $file The path
      * @return int
      */
     public static function size(string $file): int
@@ -672,7 +728,7 @@ class F
      *
      * @param string $file
      * @param string $to
-     * @return boolean
+     * @return bool
      */
     public static function unzip(string $file, string $to): bool
     {
@@ -680,7 +736,7 @@ class F
             throw new Exception('The ZipArchive class is not available');
         }
 
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
 
         if ($zip->open($file) === true) {
             $zip->extractTo($to);
@@ -709,10 +765,10 @@ class F
     /**
      * Creates a new file
      *
-     * @param  string  $file The path for the new file
-     * @param  mixed   $content Either a string, an object or an array. Arrays and objects will be serialized.
-     * @param  boolean $append true: append the content to an exisiting file if available. false: overwrite.
-     * @return boolean
+     * @param string $file The path for the new file
+     * @param mixed $content Either a string, an object or an array. Arrays and objects will be serialized.
+     * @param bool $append true: append the content to an exisiting file if available. false: overwrite.
+     * @return bool
      */
     public static function write(string $file, $content, bool $append = false): bool
     {

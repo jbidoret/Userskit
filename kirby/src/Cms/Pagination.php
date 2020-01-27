@@ -6,18 +6,22 @@ use Kirby\Http\Uri;
 use Kirby\Toolkit\Pagination as BasePagination;
 
 /**
- * The extended Pagination class handles
- * URLs in addition to the pagination features
- * from Kirby\Toolkit\Pagination
+ * The `$pagination` object divides
+ * a collection of pages, files etc.
+ * into discrete pages consisting of
+ * the number of defined items. The
+ * pagination object can then be used
+ * to navigate between these pages,
+ * create a navigation etc.
  *
  * @package   Kirby Cms
  * @author    Bastian Allgeier <bastian@getkirby.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://getkirby.com/license
  */
 class Pagination extends BasePagination
 {
-
     /**
      * Pagination method (param or query)
      *
@@ -77,9 +81,9 @@ class Pagination extends BasePagination
         }
 
         if ($params['method'] === 'query') {
-            $params['page'] = $params['page'] ?? $params['url']->query()->get($params['variable'], 1);
+            $params['page'] = $params['page'] ?? $params['url']->query()->get($params['variable']);
         } else {
-            $params['page'] = $params['page'] ?? $params['url']->params()->get($params['variable'], 1);
+            $params['page'] = $params['page'] ?? $params['url']->params()->get($params['variable']);
         }
 
         parent::__construct($params);
@@ -113,9 +117,9 @@ class Pagination extends BasePagination
      * Returns the Url for the next page.
      * Returns null if there's no next page.
      *
-     * @return string
+     * @return string|null
      */
-    public function nextPageUrl()
+    public function nextPageUrl(): ?string
     {
         if ($page = $this->nextPage()) {
             return $this->pageUrl($page);
@@ -125,13 +129,14 @@ class Pagination extends BasePagination
     }
 
     /**
-     * Returns the Url of the current page.
-     * If the $page variable is set, the Url
+     * Returns the URL of the current page.
+     * If the `$page` variable is set, the URL
      * for that page will be returned.
      *
+     * @param int|null $page
      * @return string|null
      */
-    public function pageUrl(int $page = null)
+    public function pageUrl(int $page = null): ?string
     {
         if ($page === null) {
             return $this->pageUrl($this->page());
@@ -159,9 +164,9 @@ class Pagination extends BasePagination
      * Returns the Url for the previous page.
      * Returns null if there's no previous page.
      *
-     * @return string
+     * @return string|null
      */
-    public function prevPageUrl()
+    public function prevPageUrl(): ?string
     {
         if ($page = $this->prevPage()) {
             return $this->pageUrl($page);

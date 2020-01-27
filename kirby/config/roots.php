@@ -5,8 +5,16 @@ return [
     'kirby' => function (array $roots) {
         return realpath(__DIR__ . '/../');
     },
-    'translations' => function (array $roots) {
-        return $roots['kirby'] . '/translations';
+
+    // i18n
+    'i18n' => function (array $roots) {
+        return $roots['kirby'] . '/i18n';
+    },
+    'i18n:translations' => function (array $roots) {
+        return $roots['i18n'] . '/translations';
+    },
+    'i18n:rules' => function (array $roots) {
+        return $roots['i18n'] . '/rules';
     },
 
     // index
@@ -55,9 +63,6 @@ return [
     },
     'controllers' => function (array $roots) {
         return $roots['site'] . '/controllers';
-    },
-    'emails' => function (array $roots) {
-        return $roots['site'] . '/emails';
     },
     'languages' => function (array $roots) {
         return $roots['site'] . '/languages';

@@ -7,6 +7,12 @@ use Exception;
 /**
  * A wrapper around resizing and cropping
  * via GDLib, ImageMagick or other libraries.
+ *
+ * @package   Kirby Image
+ * @author    Bastian Allgeier <bastian@getkirby.com>
+ * @link      https://getkirby.com
+ * @copyright Bastian Allgeier GmbH
+ * @license   https://opensource.org/licenses/MIT
  */
 class Darkroom
 {
@@ -57,6 +63,18 @@ class Darkroom
         // normalize the blur option
         if ($options['blur'] === true) {
             $options['blur'] = 10;
+        }
+
+        // normalize the greyscale option
+        if (isset($options['greyscale']) === true) {
+            $options['grayscale'] = $options['greyscale'];
+            unset($options['greyscale']);
+        }
+
+        // normalize the bw option
+        if (isset($options['bw']) === true) {
+            $options['grayscale'] = $options['bw'];
+            unset($options['bw']);
         }
 
         if ($options['quality'] === null) {
