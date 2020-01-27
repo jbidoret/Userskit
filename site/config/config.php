@@ -3,6 +3,9 @@
 return [
   'debug'  => true,
 
+  'languages' => true,
+  'languages.detect' => true,
+
   'email' => [
     'transport' => [
       'type' => 'smtp',
