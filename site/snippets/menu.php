@@ -7,17 +7,17 @@
 		<?php if($user = $kirby->user()): ?>
 
 		<?php if($user->isAdmin()): ?>
-		<li><a href="<?= url('panel') ?>">Panel</a></li>
+		<li><a href="<?= url('panel') ?>"><?= t('Panel') ?></a></li>
 		<?php endif ?>
 
-		<li><a<?php e($pages->find('account')->isOpen(), ' class="active"') ?>  href="<?= url('account') ?>">Account</a></li>
-		<li><a href="<?= url('logout') ?>">Logout</a></li>
+		<li><a<?php e($pages->find('account')->isOpen(), ' class="active"') ?>  href="<?= url('account') ?>"><?= t('Account') ?></a></li>
+		<li><a href="<?= url('logout') ?>"><?= t('Logout') ?></a></li>
 
 		<?php else: ?>
 
-		<li><a<?php e($pages->find('login')->isOpen(), ' class="active"') ?>  href="<?= url('login') ?>">Sign in</a></li>
-		<li><a<?php e($pages->find('account/signup')->isOpen(), ' class="active"') ?>  href="<?= url('account/signup') ?>">Sign up</a></li>
-    <li><a<?php e($pages->find('account/registrationbyemail')->isOpen(), ' class="active"') ?>  href="<?= url('account/registrationbyemail') ?>">Activate by email</a></li>
+		<li><a<?php e($pages->find('login')->isOpen(), ' class="active"') ?>  href="<?= url('login') ?>"><?= t('Sign in') ?></a></li>
+		<li><a<?php e($pages->find('account/signup')->isOpen(), ' class="active"') ?>  href="<?= url('account/signup') ?>"><?= t('Sign up') ?></a></li>
+    <li><a<?php e($pages->find('account/registrationbyemail')->isOpen(), ' class="active"') ?>  href="<?= url('account/registrationbyemail') ?>"><?= t('Activate by email') ?></a></li>
 
 		<?php endif ?>
 	</ul>
